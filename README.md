@@ -28,3 +28,7 @@ Raises an `exn:fail` exception when the SVG document fails to load.
 
 Like `load-svg-bitmap`, but takes a path string argument instead of an
 input port.
+
+Note: this is alpha software and has only been tested on
+      Debian GNU/Linux. Bug reports and patches welcome.
+
