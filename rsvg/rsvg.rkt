@@ -21,7 +21,7 @@
 (define-cpointer-type _RsvgHandle)
  
 (define-cstruct _GError
-  ([domain _int32] [code _int] [message _string]))
+  ([domain _int32] [code _int] [message _string/latin-1]))
 (define-cstruct _RsvgDimensionData
   ([width _int] [height _int] [em _double] [ex _double]))
  
