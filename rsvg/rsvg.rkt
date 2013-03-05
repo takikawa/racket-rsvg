@@ -49,11 +49,11 @@
 (define-rsvg rsvg_handle_new_from_data
   (_fun (input : _bytes)
         (input-length : _uint = (bytes-length input))
-        (error : (_ptr o _GError-pointer))
+        (error : _pointer  = (make-GError 0 0 ""))
         ->
         (handle : _RsvgHandle/null)
         ->
-        (values handle error)))
+        (values handle (ptr-ref error _GError-pointer/null))))
  
 ;; render the handle to the given cairo_t context
 (define-rsvg rsvg_handle_render_cairo
