@@ -1,5 +1,6 @@
 #lang setup/infotab
 
-(define deps '())
+(define collection 'multi)
+(define deps '("base" "draw-lib"))
 (define scribblings '(("rsvg/rsvg.scrbl")))
 
