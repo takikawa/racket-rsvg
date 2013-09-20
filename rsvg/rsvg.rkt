@@ -1,7 +1,7 @@
 #lang racket/gui
- 
+
 ;; FFI bindings to the RSVG library
- 
+
 (require ffi/unsafe
          ffi/unsafe/define
          racket/draw
@@ -14,17 +14,17 @@
            (c:-> input-port? (is-a?/c bitmap%))]
           [load-svg-from-file
            (c:-> path-string? (is-a?/c bitmap%))]))
- 
+
 (define-ffi-definer define-rsvg (ffi-lib "librsvg-2" '("2" #f)))
- 
+
 ;; Data definitions
 (define-cpointer-type _RsvgHandle)
- 
+
 (define-cstruct _GError
   ([domain _int32] [code _int] [message _string/latin-1]))
 (define-cstruct _RsvgDimensionData
   ([width _int] [height _int] [em _double] [ex _double]))
- 
+
 ;; FFI bindings
 
 ;; functions for setting the DPI
@@ -36,7 +36,7 @@
 
 ;; get the image dimensions for a handle
 (define-rsvg rsvg_handle_get_dimensions
-  (_fun _RsvgHandle 
+  (_fun _RsvgHandle
         (dim : _RsvgDimensionData-pointer = (make-RsvgDimensionData 0 0 0.0 0.0))
         -> _void
         -> (values (RsvgDimensionData-width dim)
@@ -54,7 +54,7 @@
         (handle : _RsvgHandle/null)
         ->
         (values handle (ptr-ref error _GError-pointer/null))))
- 
+
 ;; render the handle to the given cairo_t context
 (define-rsvg rsvg_handle_render_cairo
   (_fun _RsvgHandle _pointer -> _bool))
@@ -83,3 +83,4 @@
 (define (load-svg-from-file file-path)
   (with-input-from-file file-path
     (λ () (load-svg-bitmap (current-input-port)))))
+
