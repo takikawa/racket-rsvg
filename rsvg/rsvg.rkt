@@ -72,6 +72,8 @@
     (error (GError-message error-obj)))
   (define-values (width height _1 _2)
     (rsvg_handle_get_dimensions svg-handle))
+  (when (or (<= width 0) (<= height 0))
+    (error "expected image with positive width and height"))
   (define bitmap (make-bitmap width height))
   (define bitmap-handle (send bitmap get-handle))
   (rsvg_handle_render_cairo svg-handle (cairo_create bitmap-handle))
