@@ -2,7 +2,11 @@
 
 @title{RSVG: an FFI binding for loading SVG images}
 
-@(require (for-label rsvg))
+@(require (for-label racket/base
+                     racket/class
+                     racket/draw
+                     pict
+                     rsvg))
 
 @defmodule[rsvg]
 
