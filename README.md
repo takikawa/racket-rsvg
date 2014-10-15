@@ -12,29 +12,39 @@ can then be freely manipulated with the `racket/draw` or
 `slideshow/pict` libraries.
 
 ```racket
-(load-svg-bitmap port) -> (is-a?/c bitmap%)
-  port : input-port?                       
+(svg-port->pict port [α]) -> pict?
+  port : input-port?
+  α : real? = 1.0
 ```
 
-Loads an SVG document from `port` and returns a bitmap object with the
-SVG document rendered in it.
+Loads an SVG document from `port` and returns a pict object scaled by
+`α` with the SVG document rendered in it.
 
 Raises an `exn:fail` exception when the SVG document fails to load.
 
 ```racket
-(load-svg-from-file file) -> (is-a?/c bitmap%)
-  file : path-string?                         
+(svg-file->pict file [α]) -> pict?
+  file : path-string?
+  α : real? = 1.0
 ```
 
-Like `load-svg-bitmap`, but takes a path string argument instead of an
+Like `svg-port->pict`, but takes a path string argument instead of an
 input port.
+
+```racket
+(load-svg-bitmap port [α]) -> (is-a?/c bitmap%)
+  port : input-port?
+  α : real? = 1.0
+```
+
+Like `svg-port->pict`, but renders straight to bitmap.
 
 Note: this is alpha software and has only been tested on
       Debian GNU/Linux. Bug reports and patches welcome.
 
 ---
 
-Copyright 2013 Asumu Takikawa. 
+Copyright 2013 Asumu Takikawa.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
