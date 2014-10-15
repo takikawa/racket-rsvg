@@ -39,6 +39,15 @@ input port.
 
 Like `svg-port->pict`, but renders straight to bitmap.
 
+```racket
+(load-svg-from-file file [α]) -> (is-a?/c bitmap%)
+  file : path-string?
+  α : real? = 1.0
+```
+
+Like `load-svg-bitmap`, but takes a path string argument instead of an
+input port.
+
 Note: this is alpha software and has only been tested on
       Debian GNU/Linux. Bug reports and patches welcome.
 
