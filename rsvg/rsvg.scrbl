@@ -13,16 +13,27 @@ The resulting bitmap objects can then be freely manipulated with
 the @racketmodname[racket/draw] or @racketmodname[slideshow/pict]
 libraries.
 
-@defproc[(load-svg-bitmap [port input-port?])
-         (is-a?/c bitmap%)]{
-  Loads an SVG document from @racket[port] and returns a bitmap
-  object with the SVG document rendered in it.
+@defproc[(svg-port->pict [port input-port?] [α real? 1.0])
+         pict?]{
+  Loads an SVG document from @racket[port] and returns a pict
+  object scaled by @racket[α] with the SVG document rendered in it.
 
   Raises an @racket[exn:fail] exception when the SVG document
   fails to load.
 }
 
-@defproc[(load-svg-from-file [file path-string?])
+@defproc[(svg-file->pict [file path-string?] [α real? 1.0])
+         pict?]{
+  Like @racket[svg-port->pict], but takes a path string argument
+  instead of an input port.
+}
+
+@defproc[(load-svg-bitmap [port input-port?] [α real? 1.0])
+         (is-a?/c bitmap%)]{
+  Like @racket[svg-port->pict], but renders straight to bitmap.
+}
+
+@defproc[(load-svg-from-file [file path-string?] [α real? 1.0])
          (is-a?/c bitmap%)]{
   Like @racket[load-svg-bitmap], but takes a path string argument
   instead of an input port.

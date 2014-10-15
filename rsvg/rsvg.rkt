@@ -5,15 +5,23 @@
 (require ffi/unsafe
          ffi/unsafe/define
          racket/draw
+         pict
+         racket/class
+         racket/draw/private/local ;; needed for in-cairo-context
          racket/draw/unsafe/cairo
          (rename-in racket/contract
-                    [-> c:->]))
+                    [-> c:->]
+                    [->* c:->*]))
 
 (provide (contract-out
           [load-svg-bitmap
-           (c:-> input-port? (is-a?/c bitmap%))]
+           (c:->* (input-port?) (real?) (is-a?/c bitmap%))]
           [load-svg-from-file
-           (c:-> path-string? (is-a?/c bitmap%))]))
+           (c:->* (path-string?) (real?) (is-a?/c bitmap%))]
+          [svg-port->pict
+           (c:->* (input-port?) (real?) pict?)]
+          [svg-file->pict
+           (c:->* (path-string?) (real?) pict?)]))
 
 (define-ffi-definer define-rsvg (ffi-lib "librsvg-2" '("2" #f)))
 
@@ -64,23 +72,46 @@
 
 ;; High-level API
 
-(define (load-svg-bitmap port)
-  (define input-bytes (port->bytes port))
+(define (svg-bytes->pict input-bytes [α 1.0])
   (define-values (svg-handle error-obj)
     (rsvg_handle_new_from_data input-bytes))
   (unless svg-handle
     (error (GError-message error-obj)))
   (define-values (width height _1 _2)
     (rsvg_handle_get_dimensions svg-handle))
+  ;; ill-formed svgs can be weird
   (when (or (<= width 0) (<= height 0))
     (error "expected image with positive width and height"))
-  (define bitmap (make-bitmap width height))
-  (define bitmap-handle (send bitmap get-handle))
-  (rsvg_handle_render_cairo svg-handle (cairo_create bitmap-handle))
-  (rsvg_handle_free svg-handle)
-  bitmap)
 
-(define (load-svg-from-file file-path)
+  (define pict
+    (dc (λ (dc x y)
+             (define tr (send dc get-transformation))
+             (send dc translate x y)
+             (when (or (is-a? dc bitmap-dc%)
+                       (is-a? dc svg-dc%))
+               (send dc in-cairo-context
+                     (λ (target-cr)
+                        (cairo_save target-cr)
+                        (cairo_scale target-cr α α)
+                        (rsvg_handle_render_cairo svg-handle target-cr)
+                        (cairo_restore target-cr))))
+             (send dc set-transformation tr))
+          (* α width) (* α height)))
+  (register-finalizer pict (λ _ (rsvg_handle_free svg-handle)))
+  pict)
+
+
+(define (svg-port->pict port [α 1.0])
+  (svg-bytes->pict (port->bytes port) α))
+
+(define (svg-file->pict file-path [α 1.0])
   (with-input-from-file file-path
-    (λ () (load-svg-bitmap (current-input-port)))))
+    (λ () (svg-port->pict (current-input-port) α))))
 
+;; directly to bitmap
+(define (load-svg-bitmap port [α 1.0])
+  (pict->bitmap (svg-port->pict port α)))
+
+(define (load-svg-from-file file-path [α 1.0])
+  (with-input-from-file file-path
+    (λ () (load-svg-bitmap (current-input-port) α))))
