@@ -83,18 +83,31 @@
   (when (or (<= width 0) (<= height 0))
     (error "expected image with positive width and height"))
 
+  ;; for use in the `dc`s below
+  (define (cairo-proc target-cr)
+    (cairo_save target-cr)
+    (cairo_scale target-cr α α)
+    (rsvg_handle_render_cairo svg-handle target-cr)
+    (cairo_restore target-cr))
+
   (define pict
     (dc (λ (dc x y)
              (define tr (send dc get-transformation))
              (send dc translate x y)
-             (when (or (is-a? dc bitmap-dc%)
-                       (is-a? dc svg-dc%))
-               (send dc in-cairo-context
-                     (λ (target-cr)
-                        (cairo_save target-cr)
-                        (cairo_scale target-cr α α)
-                        (rsvg_handle_render_cairo svg-handle target-cr)
-                        (cairo_restore target-cr))))
+             (cond [(or (is-a? dc bitmap-dc%)
+                        (is-a? dc svg-dc%))
+                    (send dc in-cairo-context cairo-proc)]
+                   [(is-a? dc record-dc%)
+                    ;; this process will result in a non-scalable
+                    ;; picture, but it will affect record-dc% contexts
+                    ;; like in DrRacket
+                    (define bitmap
+                      (make-object bitmap%
+                                   (exact-round (* α width))
+                                   (exact-round (* α height))))
+                    (define bdc (new bitmap-dc% [bitmap bitmap]))
+                    (send bdc in-cairo-context cairo-proc)
+                    (send dc draw-bitmap bitmap 0 0)])
              (send dc set-transformation tr))
           (* α width) (* α height)))
   (register-finalizer pict (λ _ (rsvg_handle_free svg-handle)))
