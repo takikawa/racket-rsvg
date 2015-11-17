@@ -1,6 +1,8 @@
 RSVG: an FFI binding for loading SVG images
 -------------------------------------------
 
+[![Scribble](https://img.shields.io/badge/Docs-Scribble-blue.svg)](http://pkg-build.racket-lang.org/doc/rsvg/index.html)
+
 ```racket
  (require rsvg)
 ```
@@ -11,49 +13,12 @@ objects through an FFI binding to
 can then be freely manipulated with the `racket/draw` or
 `slideshow/pict` libraries.
 
-```racket
-(svg-port->pict port [α]) -> pict?
-  port : input-port?
-  α : real? = 1.0
-```
-
-Loads an SVG document from `port` and returns a pict object scaled by
-`α` with the SVG document rendered in it.
-
-Raises an `exn:fail` exception when the SVG document fails to load.
-
-```racket
-(svg-file->pict file [α]) -> pict?
-  file : path-string?
-  α : real? = 1.0
-```
-
-Like `svg-port->pict`, but takes a path string argument instead of an
-input port.
-
-```racket
-(load-svg-bitmap port [α]) -> (is-a?/c bitmap%)
-  port : input-port?
-  α : real? = 1.0
-```
-
-Like `svg-port->pict`, but renders straight to bitmap.
-
-```racket
-(load-svg-from-file file [α]) -> (is-a?/c bitmap%)
-  file : path-string?
-  α : real? = 1.0
-```
-
-Like `load-svg-bitmap`, but takes a path string argument instead of an
-input port.
-
 Note: this is alpha software and has only been tested on
       Debian GNU/Linux. Bug reports and patches welcome.
 
 ---
 
-Copyright 2013 Asumu Takikawa.
+Copyright © 2013-2015 Asumu Takikawa.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
