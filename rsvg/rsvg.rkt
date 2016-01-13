@@ -95,7 +95,8 @@
              (define tr (send dc get-transformation))
              (send dc translate x y)
              (cond [(or (is-a? dc bitmap-dc%)
-                        (is-a? dc svg-dc%))
+                        (is-a? dc svg-dc%)
+                        (is-a? dc pdf-dc%))
                     (send dc in-cairo-context cairo-proc)]
                    [(is-a? dc record-dc%)
                     ;; this process will result in a non-scalable
