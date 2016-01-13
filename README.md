@@ -3,6 +3,14 @@ RSVG: an FFI binding for loading SVG images
 
 [![Scribble](https://img.shields.io/badge/Docs-Scribble-blue.svg)](http://pkg-build.racket-lang.org/doc/rsvg/index.html)
 
+Install:
+
+```
+ raco pkg install rsvg
+```
+
+Use:
+
 ```racket
  (require rsvg)
 ```
@@ -11,14 +19,13 @@ This library provides functions for loading SVG images as Racket bitmap
 objects through an FFI binding to
 [libRSVG](https://live.gnome.org/LibRsvg). The resulting bitmap objects
 can then be freely manipulated with the `racket/draw` or
-`slideshow/pict` libraries.
+`pict` libraries.
 
-Note: this is alpha software and has only been tested on
-      Debian GNU/Linux. Bug reports and patches welcome.
+Bug reports and patches welcome.
 
 ---
 
-Copyright © 2013-2015 Asumu Takikawa.
+Copyright © 2013-2016 Asumu Takikawa.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

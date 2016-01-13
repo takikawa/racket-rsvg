@@ -14,8 +14,7 @@ This library provides functions for loading SVG images as
 Racket bitmap objects through an FFI binding to
 @hyperlink["https://live.gnome.org/LibRsvg" "libRSVG"].
 The resulting bitmap objects can then be freely manipulated with
-the @racketmodname[racket/draw] or @racketmodname[slideshow/pict]
-libraries.
+the @racketmodname[racket/draw] or @racketmodname[pict] libraries.
 
 @defproc[(svg-port->pict [port input-port?] [α real? 1.0])
          pict?]{
