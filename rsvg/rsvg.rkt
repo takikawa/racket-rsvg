@@ -94,11 +94,7 @@
     (dc (λ (dc x y)
              (define tr (send dc get-transformation))
              (send dc translate x y)
-             (cond [(or (is-a? dc bitmap-dc%)
-                        (is-a? dc svg-dc%)
-                        (is-a? dc pdf-dc%))
-                    (send dc in-cairo-context cairo-proc)]
-                   [(is-a? dc record-dc%)
+             (cond [(is-a? dc record-dc%)
                     ;; this process will result in a non-scalable
                     ;; picture, but it will affect record-dc% contexts
                     ;; like in DrRacket
@@ -108,7 +104,14 @@
                                    (exact-round (* α height))))
                     (define bdc (new bitmap-dc% [bitmap bitmap]))
                     (send bdc in-cairo-context cairo-proc)
-                    (send dc draw-bitmap bitmap 0 0)])
+                    (send dc draw-bitmap bitmap 0 0)]
+                   [else
+                    ;; the handler is needed in case the object
+                    ;; doesn't actually have a `in-cairo-context`
+                    ;; method, which is possible for non-built-in
+                    ;; dc<%> objects
+                    (with-handlers ([exn:fail:object? void])
+                      (send dc in-cairo-context cairo-proc))])
              (send dc set-transformation tr))
           (* α width) (* α height)))
   (register-finalizer pict (λ _ (rsvg_handle_free svg-handle)))
