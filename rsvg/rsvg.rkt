@@ -1,4 +1,4 @@
-#lang racket/gui
+#lang racket
 
 ;; FFI bindings to the RSVG library
 
