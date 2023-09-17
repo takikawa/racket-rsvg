@@ -99,8 +99,7 @@
                     ;; picture, but it will affect record-dc% contexts
                     ;; like in DrRacket
                     (define bitmap
-                      (make-object bitmap%
-                                   (exact-round (* α width))
+                      (make-bitmap (exact-round (* α width))
                                    (exact-round (* α height))))
                     (define bdc (new bitmap-dc% [bitmap bitmap]))
                     (send bdc in-cairo-context cairo-proc)
